@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+.env.*.local
+*.log
+.turbo/
+coverage/
+.DS_Store
+Thumbs.db
+.mcp.json

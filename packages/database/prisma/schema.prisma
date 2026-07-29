@@ -1,0 +1,427 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ── Sucursales ──────────────────────────────────────────────
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  phone     String?
+  legalId   String?  @map("cedula_juridica")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users  User[]
+  tables Table[]
+
+  @@map("sucursales")
+}
+
+// ── Roles ───────────────────────────────────────────────────
+
+enum RoleName {
+  ADMINISTRADOR
+  CAJERO
+  MESERO
+  COCINA
+  BARRA
+}
+
+model Role {
+  id   String   @id @default(uuid())
+  name RoleName @unique
+
+  users User[]
+
+  @@map("roles")
+}
+
+// ── Usuarios ────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  pin          String
+  pinPlain     String?  @map("pin_plain")
+  email        String?  @unique
+  passwordHash String?  @map("password_hash")
+  active       Boolean  @default(true) @map("activo")
+  roleId       String   @map("rol_id")
+  branchId     String   @map("sucursal_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  role   Role   @relation(fields: [roleId], references: [id])
+  branch Branch @relation(fields: [branchId], references: [id])
+
+  orders        Order[]
+  cashSessions  CashSession[]
+  cashMovements CashMovement[]
+  auditLogs     AuditLog[]
+
+  @@map("usuarios")
+}
+
+// ── Mesas ───────────────────────────────────────────────────
+
+enum TableStatus {
+  LIBRE
+  OCUPADA
+  ESPERANDO_PEDIDO
+  EN_PREPARACION
+  PENDIENTE_PAGO
+  PAGO_PARCIAL
+}
+
+model Table {
+  id       String      @id @default(uuid())
+  number   Int         @map("numero")
+  capacity Int         @default(4) @map("capacidad")
+  status   TableStatus @default(LIBRE) @map("estado")
+  branchId String      @map("sucursal_id")
+
+  branch Branch  @relation(fields: [branchId], references: [id])
+  orders Order[]
+
+  @@unique([branchId, number])
+  @@map("mesas")
+}
+
+// ── Categorías ──────────────────────────────────────────────
+
+enum CategoryDestination {
+  COCINA
+  BARRA
+}
+
+model Category {
+  id          String              @id @default(uuid())
+  name        String
+  destination CategoryDestination @map("destino")
+  active      Boolean             @default(true) @map("activo")
+
+  products Product[]
+
+  @@map("categorias")
+}
+
+// ── Productos ───────────────────────────────────────────────
+
+enum ProductType {
+  FOOD
+  COCKTAIL
+  LIQUOR
+  BEER
+  SIMPLE_DRINK
+  OPEN_PRESET
+}
+
+model Product {
+  id          String  @id @default(uuid())
+  name        String  @map("nombre")
+  description String? @map("descripcion")
+  price       Decimal @map("precio") @db.Decimal(10, 2)
+  categoryId  String  @map("categoria_id")
+  active                Boolean     @default(true) @map("activo")
+  imageUrl              String?     @map("imagen_url")
+  productType           ProductType @default(FOOD) @map("tipo_producto")
+  allowModifiers        Boolean     @default(true) @map("permite_modificadores")
+  allowNotes            Boolean @default(true) @map("permite_notas")
+  requiresCustomization Boolean @default(false) @map("requiere_personalizacion")
+
+  category       Category        @relation(fields: [categoryId], references: [id])
+  orderItems     OrderItem[]
+  modifierGroups ModifierGroup[]
+
+  @@map("productos")
+}
+
+// ── Modificadores de productos ─────────────────────────────
+
+model ModifierGroup {
+  id        String  @id @default(uuid())
+  productId String  @map("producto_id")
+  name      String  @map("nombre")
+  required  Boolean @default(false) @map("obligatorio")
+  minSelect Int     @default(0) @map("min_seleccion")
+  maxSelect Int     @default(1) @map("max_seleccion")
+  active    Boolean @default(true) @map("activo")
+  sortOrder Int     @default(0) @map("orden")
+
+  product Product          @relation(fields: [productId], references: [id])
+  options ModifierOption[]
+
+  @@map("grupos_modificador")
+}
+
+model ModifierOption {
+  id        String  @id @default(uuid())
+  groupId   String  @map("grupo_id")
+  name      String  @map("nombre")
+  priceDelta Decimal @default(0) @map("delta_precio") @db.Decimal(10, 2)
+  active    Boolean @default(true) @map("activo")
+  sortOrder Int     @default(0) @map("orden")
+
+  group     ModifierGroup       @relation(fields: [groupId], references: [id])
+  orderItemModifiers OrderItemModifier[]
+
+  @@map("opciones_modificador")
+}
+
+// ── Órdenes ─────────────────────────────────────────────────
+
+enum OrderStatus {
+  ABIERTA
+  CERRADA
+  CANCELADA
+}
+
+enum PaymentMethod {
+  EFECTIVO
+  TARJETA
+  SINPE
+  MIXTO
+}
+
+model Order {
+  id            String         @id @default(uuid())
+  tableId       String         @map("mesa_id")
+  waiterId      String         @map("mesero_id")
+  covers        Int            @default(1) @map("comensales")
+  status        OrderStatus    @default(ABIERTA) @map("estado")
+  subtotal      Decimal        @default(0) @map("subtotal") @db.Decimal(10, 2)
+  tax           Decimal        @default(0) @map("impuesto") @db.Decimal(10, 2)
+  total         Decimal        @default(0) @map("total") @db.Decimal(10, 2)
+  paymentMethod PaymentMethod? @map("metodo_pago")
+  paidAt        DateTime?      @map("pagado_en")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  table  Table @relation(fields: [tableId], references: [id])
+  waiter User  @relation(fields: [waiterId], references: [id])
+
+  items    OrderItem[]
+  invoices Invoice[]
+  payments Payment[]
+
+  @@map("ordenes")
+}
+
+// ── Pagos (cobros mixtos / parciales) ───────────────────────
+
+enum PaymentStatus {
+  PARCIAL
+  PAGADO
+}
+
+model Payment {
+  id          String        @id @default(uuid())
+  tableId     String?       @map("mesa_id")
+  orderId     String?       @map("orden_id")
+  cashierId   String        @map("cajero_id")
+  subtotal    Decimal       @default(0) @map("subtotal") @db.Decimal(10, 2)
+  tax         Decimal       @default(0) @map("impuesto") @db.Decimal(10, 2)
+  total       Decimal       @default(0) @map("total") @db.Decimal(10, 2)
+  paidAmount  Decimal       @default(0) @map("monto_pagado") @db.Decimal(10, 2)
+  balance     Decimal       @default(0) @map("saldo") @db.Decimal(10, 2)
+  status      PaymentStatus @default(PARCIAL) @map("estado")
+  receiptType InvoiceType?  @map("tipo_comprobante")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  order   Order?                @relation(fields: [orderId], references: [id])
+  details PaymentMethodDetail[]
+
+  @@map("pagos")
+}
+
+model PaymentMethodDetail {
+  id        String        @id @default(uuid())
+  paymentId String        @map("pago_id")
+  method    PaymentMethod @map("metodo")
+  amount    Decimal       @map("monto") @db.Decimal(10, 2)
+  reference String?       @map("referencia")
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@map("detalle_pago")
+}
+
+// ── Detalle de orden ────────────────────────────────────────
+
+enum OrderItemStatus {
+  PENDIENTE
+  PREPARANDO
+  LISTO
+  ENTREGADO
+}
+
+model OrderItem {
+  id             String          @id @default(uuid())
+  orderId        String          @map("orden_id")
+  productId      String?         @map("producto_id")
+  quantity       Int             @default(1) @map("cantidad")
+  unitPrice      Decimal         @map("precio_unitario") @db.Decimal(10, 2)
+  modifiersTotal Decimal         @default(0) @map("total_modificadores") @db.Decimal(10, 2)
+  finalPrice     Decimal         @default(0) @map("precio_final") @db.Decimal(10, 2)
+  notes          String?         @map("observaciones")
+  status         OrderItemStatus @default(PENDIENTE) @map("estado")
+  isOpenItem     Boolean         @default(false) @map("es_abierto")
+  customName     String?         @map("nombre_custom")
+  destination    CategoryDestination? @map("destino_abierto")
+  createdBy      String?         @map("creado_por")
+  approvedBy     String?         @map("aprobado_por")
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id])
+  modifiers OrderItemModifier[]
+
+  @@map("detalle_orden")
+}
+
+model OrderItemModifier {
+  id               String  @id @default(uuid())
+  orderItemId      String  @map("detalle_orden_id")
+  modifierOptionId String? @map("opcion_modificador_id")
+  name             String  @map("nombre")
+  priceDelta       Decimal @default(0) @map("delta_precio") @db.Decimal(10, 2)
+
+  orderItem      OrderItem       @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  modifierOption ModifierOption?  @relation(fields: [modifierOptionId], references: [id])
+
+  @@map("modificadores_detalle_orden")
+}
+
+// ── Clientes ────────────────────────────────────────────────
+
+model Customer {
+  id    String  @id @default(uuid())
+  name  String  @map("nombre")
+  idDoc String? @map("cedula")
+  email String?
+  phone String? @map("telefono")
+
+  invoices Invoice[]
+
+  @@map("clientes")
+}
+
+// ── Facturas ────────────────────────────────────────────────
+
+enum InvoiceType {
+  TIQUETE
+  FACTURA
+  NOTA_CREDITO
+  NOTA_DEBITO
+}
+
+enum InvoiceHaciendaStatus {
+  PENDIENTE
+  ACEPTADO
+  RECHAZADO
+}
+
+model Invoice {
+  id              String                @id @default(uuid())
+  orderId         String                @map("orden_id")
+  customerId      String?               @map("cliente_id")
+  type            InvoiceType           @default(TIQUETE) @map("tipo")
+  sequence        Int                   @map("consecutivo")
+  haciendaKey     String?               @map("clave_hacienda") @db.VarChar(50)
+  haciendaStatus  InvoiceHaciendaStatus @default(PENDIENTE) @map("estado_hacienda")
+  subtotal        Decimal               @default(0) @map("subtotal") @db.Decimal(10, 2)
+  tax             Decimal               @default(0) @map("impuesto") @db.Decimal(10, 2)
+  total           Decimal               @map("total") @db.Decimal(10, 2)
+  paymentMethod   PaymentMethod?        @map("metodo_pago")
+  xmlSent         String?               @map("xml_enviado") @db.Text
+  xmlResponse     String?               @map("xml_respuesta") @db.Text
+  pdfUrl          String?               @map("pdf_url")
+  haciendaError   String?               @map("error_hacienda")
+  sentAt          DateTime?             @map("enviado_en")
+  createdAt       DateTime              @default(now()) @map("created_at")
+
+  order    Order     @relation(fields: [orderId], references: [id])
+  customer Customer? @relation(fields: [customerId], references: [id])
+
+  @@map("facturas")
+}
+
+// ── Movimientos de caja ─────────────────────────────────────
+
+enum CashMovementType {
+  APERTURA
+  CIERRE
+  VENTA
+  ENTRADA
+  SALIDA
+  CANCELACION
+}
+
+model CashSession {
+  id           String    @id @default(uuid())
+  userId       String    @map("usuario_id")
+  openingAmount Decimal  @map("monto_apertura") @db.Decimal(10, 2)
+  closingAmount Decimal? @map("monto_cierre") @db.Decimal(10, 2)
+  expectedAmount Decimal? @map("monto_esperado") @db.Decimal(10, 2)
+  difference   Decimal?  @map("diferencia") @db.Decimal(10, 2)
+  openedAt     DateTime  @default(now()) @map("abierta_en")
+  closedAt     DateTime? @map("cerrada_en")
+  notes        String?   @map("observaciones")
+
+  user      User           @relation(fields: [userId], references: [id])
+  movements CashMovement[]
+
+  @@map("sesiones_caja")
+}
+
+model CashMovement {
+  id            String           @id @default(uuid())
+  sessionId     String?          @map("sesion_id")
+  type          CashMovementType @map("tipo")
+  amount        Decimal          @map("monto") @db.Decimal(10, 2)
+  referenceId   String?          @map("referencia_id")
+  paymentMethod PaymentMethod?   @map("metodo_pago")
+  description   String?          @map("descripcion")
+  userId        String           @map("usuario_id")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  session CashSession? @relation(fields: [sessionId], references: [id])
+  user    User         @relation(fields: [userId], references: [id])
+
+  @@map("movimientos_caja")
+}
+
+// ── Bitácora ────────────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String   @map("usuario_id")
+  action    String   @map("accion")
+  entity    String   @map("entidad")
+  entityId  String?  @map("entidad_id")
+  details   Json?    @map("detalle")
+  ip        String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("bitacora")
+}
+
+// ── Configuración ───────────────────────────────────────────
+
+model Config {
+  id          String  @id @default(uuid())
+  key         String  @unique @map("clave")
+  value       String  @map("valor")
+  description String? @map("descripcion")
+
+  @@map("configuracion")
+}

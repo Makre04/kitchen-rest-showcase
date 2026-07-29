@@ -1,0 +1,18 @@
+{
+  "name": "kitchen-pos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sistema POS para restaurante Kitchen",
+  "scripts": {
+    "dev:web": "pnpm --filter @kitchen/web dev",
+    "dev:api": "pnpm --filter @kitchen/api dev",
+    "dev": "pnpm --parallel --stream --filter @kitchen/web --filter @kitchen/api run dev",
+    "build": "pnpm run --filter @kitchen/web build && pnpm run --filter @kitchen/api build",
+    "db:generate": "pnpm --filter @kitchen/database generate",
+    "db:push": "pnpm --filter @kitchen/database push",
+    "db:migrate": "pnpm --filter @kitchen/database push",
+    "db:seed": "pnpm --filter @kitchen/database seed",
+    "db:reset": "pnpm --filter @kitchen/database reset && pnpm --filter @kitchen/database seed",
+    "db:studio": "pnpm --filter @kitchen/database studio"
+  }
+}
