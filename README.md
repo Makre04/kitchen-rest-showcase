@@ -8,6 +8,21 @@ A complete restaurant workflow in one system: the waiter takes the order at the 
 
 ---
 
+## Screenshots
+
+| | |
+|---|---|
+| **PIN login** | **Table map (waiter view)** |
+| ![Login screen](docs/screenshots/login.jpg) | ![Table map](docs/screenshots/mesas.jpg) |
+| **Order taking (POS)** | **Admin dashboard** |
+| ![POS order screen](docs/screenshots/pos-pedido.jpg) | ![Admin dashboard](docs/screenshots/admin-dashboard.jpg) |
+
+**Audit log (Bitácora)**
+
+![Audit log](docs/screenshots/bitacora.jpg)
+
+---
+
 ## Core Features
 
 - **Waiter module (mobile-first)** — table map, order taking with product modifiers, per-seat items, cart drafts that survive connection drops, and a connection-status banner for spotty restaurant Wi-Fi.
