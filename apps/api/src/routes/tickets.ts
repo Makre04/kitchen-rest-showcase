@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { prisma } from "@kitchen/database";
+import { prisma } from "@kitchen-rest/database";
 import { requireAuth } from "../middleware/auth.js";
 import { auditLog } from "../utils/audit.js";
 

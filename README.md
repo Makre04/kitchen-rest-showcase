@@ -1,4 +1,4 @@
-# Kitchen POS — Restaurant Point-of-Sale Platform
+# Kitchen Rest POS — Restaurant Point-of-Sale Platform
 
 > Full-stack POS system built for a real restaurant operation in Costa Rica: waiter ordering, kitchen display, cashier sessions, and electronic invoicing — running on commodity tablets over local Wi-Fi.
 

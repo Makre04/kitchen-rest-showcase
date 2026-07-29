@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { prisma } from "@kitchen/database";
+import { prisma } from "@kitchen-rest/database";
 import { z } from "zod";
-import { Prisma } from "@kitchen/database";
+import { Prisma } from "@kitchen-rest/database";
 type Decimal = Prisma.Decimal;
 const Decimal = Prisma.Decimal;
 import { IVA_RATE } from "../constants.js";

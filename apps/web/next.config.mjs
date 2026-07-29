@@ -12,7 +12,7 @@ const nextConfig = {
   // TEMPORAL — PILOTO CONTROLADO (2026-06-15)
   // `ignoreDuringBuilds: true` activado solo para piloto, para no bloquear el build
   // con deuda de estilo preexistente (no-explicit-any / no-unused-vars).
-  // TypeScript si corre en el build. Lint aparte: pnpm --filter @kitchen/web lint
+  // TypeScript si corre en el build. Lint aparte: pnpm --filter @kitchen-rest/web lint
   //
   // REACTIVAR ANTES DE PRODUCCION:
   //   1) Limpiar deuda ESLint.

@@ -1,5 +1,5 @@
 {
-  "name": "@kitchen/api",
+  "name": "@kitchen-rest/api",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
     "@fastify/cookie": "^11.0.0",
     "@fastify/cors": "^11.0.0",
     "@fastify/websocket": "^11.0.0",
-    "@kitchen/database": "workspace:*",
+    "@kitchen-rest/database": "workspace:*",
     "bcryptjs": "^2.4.3",
     "dotenv": "^17.4.2",
     "fastify": "^5.3.3",

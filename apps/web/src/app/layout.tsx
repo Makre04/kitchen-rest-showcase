@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Kitchen POS",
+  title: "Kitchen Rest POS",
   description: "Sistema de punto de venta - Restaurante Kitchen",
 };
 

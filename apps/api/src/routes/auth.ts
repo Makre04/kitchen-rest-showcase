@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
-import { prisma } from "@kitchen/database";
+import { prisma } from "@kitchen-rest/database";
 import { compare } from "bcryptjs";
 import { z } from "zod";
 import { requireAuth, signStaffToken } from "../middleware/auth.js";

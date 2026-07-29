@@ -1,5 +1,5 @@
-﻿/**
- * Kitchen POS — Multi-Mesero Smoke Test (v2 — con prueba de doble cobro ×10)
+/**
+ * Kitchen Rest POS — Multi-Mesero Smoke Test (v2 — con prueba de doble cobro ×10)
  * Valida flujos normales + race condition en cobros con 10 iteraciones.
  *
  * Uso: node scripts/multi-mesero-smoke-test.mjs
@@ -651,7 +651,7 @@ ${checkList}
 ## Veredicto
 
 ${closeOk && payOk && failCount === 0
-  ? `### OK Race condition de cobro corregida. Kitchen POS vuelve a estar listo para piloto controlado.
+  ? `### OK Race condition de cobro corregida. Kitchen Rest POS vuelve a estar listo para piloto controlado.
 
 - \`POST /api/caja/orders/:id/close\`: ${closeWins}/${RACE_ITERATIONS} iteraciones — PROTEGIDO
 - \`POST /api/caja/orders/:id/pay\`: ${payWins}/${RACE_ITERATIONS} iteraciones — PROTEGIDO
@@ -671,7 +671,7 @@ _Branch \`fix/atomic-payments\` — pendiente de merge a \`main\`_
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 async function main() {
   console.log(`\n${C.bold}${C.cyan}╔═══════════════════════════════════════════════════╗
-║  KITCHEN POS — Multi-Mesero Smoke Test v2           ║
+║  KITCHEN REST POS — Multi-Mesero Smoke Test v2           ║
 ║  Branch: fix/atomic-payments                      ║
 ║  Race condition × ${RACE_ITERATIONS} iteraciones por endpoint     ║
 ╚═══════════════════════════════════════════════════╝${C.reset}`);
@@ -737,7 +737,7 @@ async function main() {
   log(`  Tiempo total: ${Date.now() - startMs}ms`);
 
   if (failCount === 0 && closeOk && payOk) {
-    log(`\n  ${C.green}${C.bold}OK Race condition de cobro corregida. Kitchen POS listo para piloto controlado.${C.reset}`);
+    log(`\n  ${C.green}${C.bold}OK Race condition de cobro corregida. Kitchen Rest POS listo para piloto controlado.${C.reset}`);
   } else {
     log(`\n  ${C.yellow}${C.bold}[AVISO] ${failCount} check(s) fallaron — revisar antes del piloto.${C.reset}`);
   }

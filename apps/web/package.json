@@ -1,5 +1,5 @@
 {
-  "name": "@kitchen/web",
+  "name": "@kitchen-rest/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {

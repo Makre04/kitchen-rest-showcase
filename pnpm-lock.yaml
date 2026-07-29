@@ -19,7 +19,7 @@ importers:
       '@fastify/websocket':
         specifier: ^11.0.0
         version: 11.2.0
-      '@kitchen/database':
+      '@kitchen-rest/database':
         specifier: workspace:*
         version: link:../../packages/database
       bcryptjs:

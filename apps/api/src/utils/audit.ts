@@ -1,5 +1,5 @@
 import { FastifyRequest } from "fastify";
-import { prisma, Prisma } from "@kitchen/database";
+import { prisma, Prisma } from "@kitchen-rest/database";
 
 export async function auditLog(
   request: FastifyRequest,

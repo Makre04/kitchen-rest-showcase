@@ -150,7 +150,7 @@ export default function ReportesPage() {
       // Header
       doc.setFontSize(20);
       doc.setFont("helvetica", "bold");
-      doc.text("KITCHEN POS", 14, y);
+      doc.text("KITCHEN REST POS", 14, y);
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(120);
@@ -324,11 +324,11 @@ export default function ReportesPage() {
         doc.setPage(i);
         doc.setFontSize(8);
         doc.setTextColor(150);
-        doc.text(`KITCHEN POS - Reporte ${periodLabel}`, 14, doc.internal.pageSize.getHeight() - 10);
+        doc.text(`KITCHEN REST POS - Reporte ${periodLabel}`, 14, doc.internal.pageSize.getHeight() - 10);
         doc.text(`Pagina ${i} de ${pageCount}`, pageWidth - 14, doc.internal.pageSize.getHeight() - 10, { align: "right" });
       }
 
-      const fileName = `KITCHEN_Reporte_${period === "personalizado" ? `${customFrom}_${customTo}` : period}_${new Date().toISOString().slice(0, 10)}.pdf`;
+      const fileName = `KITCHEN_REST_Reporte_${period === "personalizado" ? `${customFrom}_${customTo}` : period}_${new Date().toISOString().slice(0, 10)}.pdf`;
       doc.save(fileName);
     } catch (err) {
       console.error("Error generating PDF:", err);

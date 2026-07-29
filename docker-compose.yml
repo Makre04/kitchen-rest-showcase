@@ -1,12 +1,12 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: kitchen-postgres
+    container_name: kitchen-rest-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: kitchen
+      POSTGRES_USER: kitchen_rest
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_local_dev_only}
-      POSTGRES_DB: kitchen_pos
+      POSTGRES_DB: kitchen_rest_pos
     ports:
       - "5432:5432"
     volumes:
@@ -14,7 +14,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: kitchen-redis
+    container_name: kitchen-rest-redis
     restart: unless-stopped
     ports:
       - "6379:6379"

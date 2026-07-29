@@ -1,18 +1,18 @@
 {
-  "name": "kitchen-pos",
+  "name": "kitchen-rest-pos",
   "version": "0.1.0",
   "private": true,
-  "description": "Sistema POS para restaurante Kitchen",
+  "description": "Sistema POS para restaurante Kitchen Rest",
   "scripts": {
-    "dev:web": "pnpm --filter @kitchen/web dev",
-    "dev:api": "pnpm --filter @kitchen/api dev",
-    "dev": "pnpm --parallel --stream --filter @kitchen/web --filter @kitchen/api run dev",
-    "build": "pnpm run --filter @kitchen/web build && pnpm run --filter @kitchen/api build",
-    "db:generate": "pnpm --filter @kitchen/database generate",
-    "db:push": "pnpm --filter @kitchen/database push",
-    "db:migrate": "pnpm --filter @kitchen/database push",
-    "db:seed": "pnpm --filter @kitchen/database seed",
-    "db:reset": "pnpm --filter @kitchen/database reset && pnpm --filter @kitchen/database seed",
-    "db:studio": "pnpm --filter @kitchen/database studio"
+    "dev:web": "pnpm --filter @kitchen-rest/web dev",
+    "dev:api": "pnpm --filter @kitchen-rest/api dev",
+    "dev": "pnpm --parallel --stream --filter @kitchen-rest/web --filter @kitchen-rest/api run dev",
+    "build": "pnpm run --filter @kitchen-rest/web build && pnpm run --filter @kitchen-rest/api build",
+    "db:generate": "pnpm --filter @kitchen-rest/database generate",
+    "db:push": "pnpm --filter @kitchen-rest/database push",
+    "db:migrate": "pnpm --filter @kitchen-rest/database push",
+    "db:seed": "pnpm --filter @kitchen-rest/database seed",
+    "db:reset": "pnpm --filter @kitchen-rest/database reset && pnpm --filter @kitchen-rest/database seed",
+    "db:studio": "pnpm --filter @kitchen-rest/database studio"
   }
 }

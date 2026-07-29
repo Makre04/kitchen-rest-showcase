@@ -50,7 +50,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm rounded-3xl border border-white/10 bg-[#111] p-6 shadow-2xl">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-black text-white">
-            <span className="text-[var(--gold)]">KITCHEN</span> POS
+            <span className="text-[var(--gold)]">KITCHEN REST</span> POS
           </h1>
           <p className="text-white/40 mt-2">Acceso rápido por código</p>
         </div>

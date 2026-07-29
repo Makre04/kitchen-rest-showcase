@@ -36,7 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-6 border-b border-white/5">
           <div className="flex items-center justify-between">
             <h1 className="text-lg font-bold">
-              <span className="text-[var(--gold)]">KITCHEN</span>{" "}
+              <span className="text-[var(--gold)]">KITCHEN REST</span>{" "}
               <span className="text-white/40">Admin</span>
             </h1>
             <a href="/" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 text-white/50 hover:bg-white/10 hover:text-white transition-colors text-xs font-medium">

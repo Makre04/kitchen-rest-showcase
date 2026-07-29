@@ -192,7 +192,7 @@ export default function Home() {
       <header className="flex items-center justify-between mb-4 md:mb-8 gap-2">
         <div className="flex items-center gap-2 md:gap-4 min-w-0">
           <h1 className="text-xl md:text-2xl font-bold tracking-tight whitespace-nowrap">
-            <span className="text-[var(--gold)]">KITCHEN</span>{" "}
+            <span className="text-[var(--gold)]">KITCHEN REST</span>{" "}
             <span className="text-white/40 font-light">Mesas</span>
           </h1>
           <div className="hidden md:block h-6 w-px bg-white/10" />
